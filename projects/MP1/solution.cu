@@ -28,27 +28,27 @@ int main(int argc, char **argv) {
     float *deviceInput1;
     float *deviceInput2;
     float *deviceOutput;
-    size_t n = inputLength * sizeof(float);
-    cudaMalloc(static_cast<void **>(&deviceInput1), n);
-    cudaMalloc(static_cast<void **>(&deviceInput2), n);
-    cudaMalloc(static_cast<void **>(&deviceOutput), n);
+    size_t totalSize = inputLength * sizeof(float);
+    cudaMalloc(static_cast<void **>(&deviceInput1), totalSize);
+    cudaMalloc(static_cast<void **>(&deviceInput2), totalSize);
+    cudaMalloc(static_cast<void **>(&deviceOutput), totalSize);
 
     //@@ Copy memory to the GPU here
-    cudaMemcpy(deviceInput1, hostInput1, n, cudaMemcpyHostToDevice);
-    cudaMemcpy(deviceInput2, hostInput2, n, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInput1, hostInput1, totalSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInput2, hostInput2, totalSize, cudaMemcpyHostToDevice);
 
     //@@ Initialize the grid and block dimensions here
     const size_t numThreadsPerBlock = 256;
-    const size_t numBlocks = std::ceil(1.0 * n / numThreadsPerBlock);
+    const size_t numBlocks = std::ceil(1.0 * inputLength / numThreadsPerBlock);
     dim3 DimGrid(numBlocks, 1, 1);
     dim3 DimBlock(numThreadsPerBlock, 1, 1);
 
     //@@ Launch the GPU Kernel here
-    vecAddKernel<<<DimGrid, DimBlock>>>(deviceInput1, deviceInput2, deviceOutput, n);
+    vecAddKernel<<<DimGrid, DimBlock>>>(deviceInput1, deviceInput2, deviceOutput, inputLength);
     cudaDeviceSynchronize();
 
     //@@ Copy the GPU memory back to the CPU here
-    cudaMemcpy(hostOutput, deviceOutput, n, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hostOutput, deviceOutput, totalSize, cudaMemcpyDeviceToHost);
 
     //@@ Free the GPU memory here
     cudaFree(deviceInput1);
