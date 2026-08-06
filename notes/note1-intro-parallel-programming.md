@@ -23,6 +23,7 @@ If an application has:
 * `s` speedup achieved on the parallelizable part
 
 Then the overall speedup rate is:
+
 $$
 t_{\text{parallel}}
 = (1-p)t + \frac{pt}{s}
@@ -37,6 +38,7 @@ $$
 $$
 
 When \(s \to \infty\):
+
 $$
 \text{Speedup}_{\max}
 = \frac{1}{1-p}
