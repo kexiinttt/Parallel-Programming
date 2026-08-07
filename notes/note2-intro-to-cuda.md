@@ -75,7 +75,9 @@ int main() {
     // n is total amount of threads we need
     const unsigned int numThreadsPerBlock = ...;
     const unsigned int numBlocks = ceil(1.0 * n / numThreadsPerBlock);
-    vecAddKernel<<<numBlocks, numThreadsPerBlock>>>(...);
+    dim3 DimGrid(numBlocks, 1, 1);
+    dim3 DimBlock(numThreadsPerBlock, 1, 1);
+    vecAddKernel<<<DimGrid, DimBlock>>>(...);
 
     return 0;
 }
@@ -83,6 +85,12 @@ int main() {
 
 > [!IMPORTANT]
 > Always remember to check boundary! Because we use `ceil`, which means sometimes we allocate more threads in the last block than real needs.
+
+> [!NOTE]
+> CUDA supports multi-dimensional grids/blocks (up to 3), for example, `dim3 DimGrid(x, y, z)` represents grid's dimensions.
+
+> [!NOTE]
+> `blockIdx`, `blockDim`, `threadIdx` and `gridDim` are four build-in keywords in CUDA. They all have 3 dimensions (`x`, `y` and `z`).
 
 | Keyword | Callable from | Executable on |
 | :---: | :---: | :---: |
