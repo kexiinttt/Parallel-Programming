@@ -1,1 +1,0 @@
-![Optimization](./static/optimization-checklist.png)
